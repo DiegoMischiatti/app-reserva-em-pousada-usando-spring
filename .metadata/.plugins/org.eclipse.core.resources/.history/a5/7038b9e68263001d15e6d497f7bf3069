@@ -1,0 +1,121 @@
+package br.edu.infnet.apppousada.model;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import br.edu.infnet.apppousada.enuns.SexoHospede;
+
+@Entity
+@Table(name = "reservas")
+public class Reserva {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	private LocalDate dataLanc;
+	private LocalDate dataInicio;
+	private LocalDate dataFim;
+	
+	@ManyToOne
+	@JoinColumn(name = "quartoid")
+	private Quarto quarto;
+	
+	@ManyToOne
+	@JoinColumn(name = "hospedeid")
+	private Hospede hospede;
+	
+	private String observacao;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public LocalDate getDataLanc() {
+		return dataLanc;
+	}
+
+	public void setDataLanc(LocalDate dataLanc) {
+		this.dataLanc = dataLanc;
+	}
+
+	public LocalDate getDataInicio() {
+		return dataInicio;
+	}
+
+	public void setDataInicio(LocalDate dataInicio) {
+		this.dataInicio = dataInicio;
+	}
+
+	public LocalDate getDataFim() {
+		return dataFim;
+	}
+
+	public void setDataFim(LocalDate dataFim) {
+		this.dataFim = dataFim;
+	}
+
+	public Quarto getQuarto() {
+		return quarto;
+	}
+
+	public void setQuarto(Quarto quarto) {
+		this.quarto = quarto;
+	}
+
+	public Hospede getHospede() {
+		return hospede;
+	}
+
+	public void setHospede(Hospede hospede) {
+		this.hospede = hospede;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Reserva other = (Reserva) obj;
+		return Objects.equals(id, other.id);
+	}
+
+	@Override
+	public String toString() {
+		return "Reserva [id=" + id + ", dataLanc=" + dataLanc + ", dataInicio=" + dataInicio + ", dataFim=" + dataFim
+				+ ", quarto=" + quarto + ", hospede=" + hospede + ", observacao=" + observacao + "]";
+	}
+	
+	
+	
+	
+}

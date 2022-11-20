@@ -1,0 +1,76 @@
+package br.edu.infnet.apppousada.service;
+
+import java.util.HashMap;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.edu.infnet.apppousada.exception.ResourceNotFoundException;
+import br.edu.infnet.apppousada.model.Hospede;
+import br.edu.infnet.apppousada.repository.HospedeRepository;
+
+@CrossOrigin(origins = "http://localhost:4200")
+@RestController
+@RequestMapping("/api/v1")
+public class HospedeService {
+	@Autowired
+	private HospedeRepository hospedeRepository;
+
+	@GetMapping("/hospedes")
+	public List<Hospede> getAllhospedes() {
+		return hospedeRepository.findAll();
+	}
+
+	@GetMapping("/hospedes/{id}")
+	public ResponseEntity<Hospede> gethospedeById(@PathVariable(value = "id") Long hospedeId)
+			throws ResourceNotFoundException {
+		Hospede hospede = hospedeRepository.findById(hospedeId)
+				.orElseThrow(() -> new ResourceNotFoundException("hospede com id nao existente::: " + hospedeId));
+		return ResponseEntity.ok().body(hospede);
+	}
+
+	@PostMapping("/hospedes")
+	public Hospede createhospede(@Valid @RequestBody Hospede hospede) {
+		return hospedeRepository.save(hospede);
+	}
+
+	@PutMapping("/hospedes/{id}")
+	public ResponseEntity<Hospede> updatehospede(@PathVariable(value = "id") Long hospedeId,
+			@Valid @RequestBody Hospede hospedeDetails) throws ResourceNotFoundException {
+		Hospede hospede = hospedeRepository.findById(hospedeId)
+				.orElseThrow(() -> new ResourceNotFoundException("hospede com id nao existente::: " + hospedeId));
+
+		hospede.setNome(hospedeDetails.getNome());
+		hospede.setCpf(hospedeDetails.getCpf());
+		hospede.setSexo(hospedeDetails.getSexo());
+		hospede.setEmail(hospedeDetails.getEmail());
+		final Hospede updatehospede = hospedeRepository.save(hospede);
+		return ResponseEntity.ok(updatehospede);
+	}
+
+	@DeleteMapping("/hospedes/{id}")
+	public Map<String, Boolean> deletehospede(@PathVariable(value = "id") Long hospedeId)
+			throws ResourceNotFoundException {
+		Hospede hospede = hospedeRepository.findById(hospedeId)
+				.orElseThrow(() -> new ResourceNotFoundException("hospede com id nao existente::: " + hospedeId));
+
+		hospedeRepository.delete(hospede);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("deleted", Boolean.TRUE);
+		return response;
+	}
+}
